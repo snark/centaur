@@ -1,8 +1,9 @@
 import feedparser
 import blinker
 
+
 def parse_feed(feed_url, filters=None, aggregators=None, cache=None,
-        signal_channel='centaur'):
+               signal_channel='centaur'):
     """
     Parses a feed using the Universal Feed Parser.
 
@@ -21,15 +22,16 @@ def parse_feed(feed_url, filters=None, aggregators=None, cache=None,
     signal = blinker.signal(signal_channel)
 
     if not isinstance(feed_url, basestring):
-        raise ValueException('Feed URL is not a string: {0}'
-                .format(str(feed_url)))
+        raise ValueException('Feed URL is not a string: {0}'.format(
+            str(feed_url))
+        )
 
     signal.send(
         'parse_begin',
         id=feed_url,
         data=None,
     )
-    
+
     if cache:
         etag_key = ':'.join([feed_url, 'etag'])
         modified_key = ':'.join([feed_url, 'modified'])
@@ -60,7 +62,7 @@ def parse_feed(feed_url, filters=None, aggregators=None, cache=None,
         )
         for a in aggregators:
             try:
-                a.submit(filtered_entries)
+                a(filtered_entries)
             except AttributeError:
                 pass
 
