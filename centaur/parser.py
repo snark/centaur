@@ -61,10 +61,8 @@ def parse_feed(feed_url, filters=None, aggregators=None, cache=None,
             data=entries,
         )
         for a in aggregators:
-            try:
-                a(filtered_entries)
-            except AttributeError:
-                pass
+            for e in filtered_entries:
+                a.send((e, feed_response.feed))
 
     if cache:
         cache[etag_key] = feed_response.get('etag')
