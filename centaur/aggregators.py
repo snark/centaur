@@ -3,9 +3,10 @@ import io
 
 
 def simple_file(filename=None, max_results=10, feed_settings=None):
-    if not filename:
-        raise TypeError('file_aggregator() requires filename argument')
-    if not feed_settings:
+    #    if not filename:
+    #    raise TypeError('file_aggregator() requires filename argument')
+    #if not feed_settings:
+    if feed_settings is None:
         feed_settings = {}
     validate_feed_settings(feed_settings)
     entries = []
