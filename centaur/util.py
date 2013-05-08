@@ -5,6 +5,8 @@ import json
 def validate_feed_settings(setting_dict):
     required = ['title', 'feed_url', 'url']
     missing = []
+    if not hasattr(setting_dict, 'get'):
+        raise ValueError('Cannot evaluate non-dictlike settings')
     for prop in required:
         if not setting_dict.get(prop):
             missing.append(prop)

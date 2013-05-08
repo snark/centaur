@@ -8,8 +8,6 @@ def simple_file(filename=None, max_results=10, feed_settings=None):
     # so we can't make filename a required arg at the interpreter level
     if not filename:
         raise TypeError('file_aggregator() requires filename argument')
-    if not feed_settings:
-        feed_settings = {}
     validate_feed_settings(feed_settings)
     entries = []
     try:
