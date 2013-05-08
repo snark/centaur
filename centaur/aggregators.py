@@ -3,6 +3,9 @@ import io
 
 
 def simple_file(filename=None, max_results=10, feed_settings=None):
+    # we do this check 'cause we may get passed a list of keyword args
+    # and can't guarantee order
+    # so we can't make filename a required arg at the interpreter level
     if not filename:
         raise TypeError('file_aggregator() requires filename argument')
     if not feed_settings:
