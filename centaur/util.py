@@ -2,6 +2,9 @@ import pyatom
 import datetime
 import json
 
+def inflate_filter(factory, settings_dict) {
+    return factory(*settings_dict)
+
 def validate_feed_settings(setting_dict):
     required = ['title', 'feed_url', 'url']
     missing = []
