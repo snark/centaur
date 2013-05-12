@@ -7,6 +7,7 @@ def any_of(**kwargs):
     # NB
     # When we begin inflating filters out of configs, we'll want
     # to inflate each filter here.
+
     def filter(entry):
         filter_passed = False
         for f in filter:
@@ -22,6 +23,7 @@ def all_of(**kwargs):
     # NB
     # When we begin inflating filters out of configs, we'll want
     # to inflate each filter here.
+
     def filter(entry):
         filter_passed = False
         for f in filter:
