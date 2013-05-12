@@ -64,7 +64,10 @@ def template_simple(template_filename=None, output_filename=None,
         for e in entries:
             # TODO: Make this behavior more robust and split it out
             # into a utlity function
-            e['content_reconstituted'] = e['content'][0]['value']
+            try:
+                e['content_reconstituted'] = e['content'][0]['value']
+            except KeyError:
+                e['content_reconstituted'] = e['summary']
         out = template.render(settings=output_settings, entries=entries)
         with io.open(output_filename, mode='w', encoding='utf-8') as f:
             f.write(out)
