@@ -4,16 +4,13 @@ import xml.etree.ElementTree as ET
 
 from .util import validate_feed_settings
 
-CONFIG_KEYS = ('feeds', 'num_entries', 'title', 'subtitle', 'feed_url', 'url')
+CONFIG_KEYS = ('feeds', 'filters', 'aggregators')
 
 def load(config_file_path):
     # a json config has six keys at the moment
     # - a list of feeds
-    # - the number of entries to output
-    # - the generated feed's title
-    # - the generated feed's subtitle
-    # - the generated feed's feed_url
-    # - the generated feed's HTML url
+    # - a list of (universally applied) filters
+    # - a list of aggregators
     # an opml config only has one
     # - a list of feeds
     config_fileext = os.path.splitext(config_file_path)[1]
