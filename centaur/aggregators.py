@@ -31,20 +31,16 @@ def atom_simple(filename=None, max_results=10, feed_settings=None):
             f.write(new_feed.to_string())
 
 
-def template_simple(
-        template_filename=None,
-        output_filename=None,
-        max_results=10,
-        output_settings=None,
-    ):
+def template_simple(template_filename=None, output_filename=None,
+                    max_results=10, output_settings=None):
     if not template_filename:
         raise TypeError(
-                'template_simple() requires template_filename argument'
-            )
+            'template_simple() requires template_filename argument'
+        )
     if not output_filename:
         raise TypeError(
-                'template_simple() requires output_filename argument'
-            )
+            'template_simple() requires output_filename argument'
+        )
     if not os.path.isfile(template_filename):
         raise ValueError('{} does not exist'.format(template_filename))
     template_dir, template_name = os.path.split(template_filename)
