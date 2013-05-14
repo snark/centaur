@@ -1,19 +1,18 @@
 #!/usr/bin/env python
 
 import argparse
-import os
 import sys
 
-from centaur import (config, parser, filters, aggregators, util)
+from centaur import (config, parser, util)
 
 
 def main():
-    parser = argparse.ArgumentParser(description='')
-    parser.add_argument('config', nargs='+',
+    argparser = argparse.ArgumentParser(description='')
+    argparser.add_argument('config', nargs='+',
         help='full path to config file')
-    parser.add_argument('-f', '--feed', action='append', 
+    argparser.add_argument('-f', '--feed', action='append', 
             help='a feed to include')
-    args = parser.parse_args()
+    args = argparser.parse_args()
     cnf = {}
     try:
         for c in args.config:
@@ -27,13 +26,9 @@ def main():
                 elif key == 'feeds':
                     cnf[key].extend(config_dict[key])
     except Exception as e:
-        raise
         sys.exit('Something went wrong:\n {}'.format(e))
     if args.feed:
-        print cnf['feeds']
         feedlist = list(set(cnf['feeds'] + args.feed))
-        for f in feedlist:
-            print f
         cnf['feeds'] = feedlist
     if 'aggregators' not in cnf:
         sys.exit('You didn\'t specify any aggregators!')
