@@ -43,8 +43,6 @@ def validate_feed_settings(setting_dict):
         )
 
 
-# TODO: inflate_filter and inflate_aggregator should be wrappers around
-# a private inflate method for DRY reasons.
 def inflate_filter(filter_identifier, settings=None, filter_modules=None):
     """
     Transform a string (identifying a factory function) and a settings
@@ -59,37 +57,8 @@ def inflate_filter(filter_identifier, settings=None, filter_modules=None):
         # We're attempting to inflate what is probably a previously-inflated
         # filter. Let's just bounce it back.
         return filter_identifier
-    f = None
-    if filter_identifier in _filter_cache:
-        # Is it in cache? Great.
-        f = _filter_cache[filter_identifier]
-    else:
-        # Assume it's a fully-qualified name, mymodule.submodule.method
-        pieces = filter_identifier.split(".")
-        module_name = '.'.join(pieces[0:-1])
-        if module_name:
-            try:
-                imported = importlib.import_module(module_name)
-                f = getattr(imported, pieces[-1])
-            except (ImportError, AttributeError) as e:
-                pass
-    if not f:
-        # Last chance -- import everything in filter_modules
-        # and check there.
-        for module_name in filter_modules:
-            try:
-                imported = importlib.import_module(module_name)
-                f = getattr(imported, filter_identifier)
-            except (ImportError, AttributeError):
-                pass
-            if f:
-                break
-    if not f:
-        raise ValueError('Unable to locate filter {0}'.
-                         format(filter_identifier))
-    _filter_cache[filter_identifier] = f
-    inflated_function = f(**settings)
-    return inflated_function
+    return _inflate('filter', filter_identifier, settings,
+                    _filter_cache, filter_modules)
 
 
 def inflate_aggregator(agg_identifier, settings=None, agg_modules=None):
@@ -102,17 +71,23 @@ def inflate_aggregator(agg_identifier, settings=None, agg_modules=None):
         agg_modules = AGGREGATOR_MODULES
     if not settings:
         settings = {}
-    if callable(agg_identifier):
-        # We're attempting to inflate what is probably a previously-inflated
-        # aggregator. Let's just bounce it back.
-        return agg_identifier 
+    return _inflate('aggregator', agg_identifier, settings,
+                    _aggregator_cache, agg_modules)
+
+
+def _inflate(which, identifier, settings, inflated_cache, modules):
+    if callable(identifier):
+        if which == 'aggregator' or not isinstance(identifier, type):
+            # We're attempting to inflate what is probably a previously-
+            # inflated object. Let's just bounce it back.
+            return identifier
     f = None
-    if agg_identifier in _aggregator_cache:
+    if identifier in inflated_cache:
         # Is it in cache? Great.
-        f = _aggregator_cache[agg_identifier]
+        f = inflated_cache[identifier]
     else:
         # Assume it's a fully-qualified name, mymodule.submodule.method
-        pieces = agg_identifier.split(".")
+        pieces = identifier.split(".")
         module_name = '.'.join(pieces[0:-1])
         if module_name:
             try:
@@ -121,22 +96,19 @@ def inflate_aggregator(agg_identifier, settings=None, agg_modules=None):
             except (ImportError, AttributeError) as e:
                 pass
     if not f:
-        # Last chance -- import everything in aggregator_modules
-        # and check there.
-        for module_name in agg_modules:
+        # Last chance -- import everything in modules and check there.
+        for module_name in modules:
             try:
                 imported = importlib.import_module(module_name)
-                f = getattr(imported, agg_identifier)
+                f = getattr(imported, identifier)
             except (ImportError, AttributeError):
                 pass
             if f:
                 break
     if not f:
-        raise ValueError('Unable to locate aggregator {0}'.
-                         format(agg_identifier))
-    _aggregator_cache[agg_identifier] = f
-    # TODO - Confirm that this also works for classes if the
-    # class supports .next() and .send()
+        raise ValueError('Unable to locate {0} {1}'.
+                         format(which, identifier))
+    inflated_cache[identifier] = f
     inflated_function = f(**settings)
     return inflated_function
 
@@ -152,11 +124,11 @@ def generate_feed(entries, settings=None):
         url=settings['url'],
     )
     for e in entries:
+        content = e['content'][0]['value'] if 'content' in e else e['summary']
         feed.add(
             title=e['title'],
             author=e.get('author'),
-            content=e['content'][0]['value'] if 'content' in e
-                else e['summary'],
+            content=content,
             id=e['id'],
             updated=datetime.datetime(*(e['updated_parsed'][0:6]))
         )
