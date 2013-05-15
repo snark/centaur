@@ -1,8 +1,29 @@
 {
-"subtitle": "SAMPLE_SUBTITLE", 
-"feed_url": "SAMPLE_FEED_URL", 
-"title": "SAMPLE_TITLE", 
-"url": "SAMPLE_URL", 
-"num_entries": 5, 
-"feeds": ["https://github.com/snark/centaur/commits/master.atom"]
+    "feeds":
+        [ "http://www.reddit.com/r/Python/.rss",
+          "http://www.reddit.com/r/programming/.rss" ],
+    "filters": {
+        "title_matches": {
+            "strings": ["python"]
+        }
+    },
+    "aggregators": {
+        "template_simple": {
+            "template_filename": "/Users/scook/Documents/Personal/Code/centaur/sample_template.tmp",
+            "output_filename": "/tmp/centaur_example.html",
+            "output_settings": {
+                "title": "Centaur"
+            }
+        },
+        "atom_simple": {
+            "filename": "/tmp/centaur_example.xml",
+            "feed_settings": {
+                "title": "Centaur",
+                "subtitle": "Every man his own horse",
+                "feed_url": "foo",
+                "url": "bar"
+            }
+        }
+    }
 }
+
