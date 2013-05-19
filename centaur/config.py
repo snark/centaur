@@ -6,6 +6,7 @@ from .util import validate_feed_settings
 
 CONFIG_KEYS = ('feeds', 'filters', 'aggregators')
 
+
 def load(config_file_path):
     # a json config has six keys at the moment
     # - a list of feeds
@@ -29,10 +30,9 @@ def load(config_file_path):
             if x in orig_dict:
                 config_dict[x] = orig_dict[x]
     elif config_fileext == '.opml':
-        root  = ET.fromstring(config_string)
+        root = ET.fromstring(config_string)
         body = root.find('body')
         outlines = body.findall('outline')
         config_dict = {}
         config_dict['feeds'] = [x.attrib['xmlUrl'] for x in outlines]
     return config_dict
-
