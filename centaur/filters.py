@@ -1,16 +1,23 @@
 import re
 import datetime
+from .util import (inflate_filter)
 
 
 def any_of(**kwargs):
     filters = kwargs['filters']
-    # NB
-    # When we begin inflating filters out of configs, we'll want
-    # to inflate each filter here.
+    # filter values might be:
+    # * a dict, with the filter name the key and the settings dict the val
+    # * a string
+    # * fully inflated filters
+    inflated = [
+        inflate_filter(f) if not isinstance(f, dict)
+        else inflate(f.keys()[0], f.items()[0])
+        for f in filters
+    ]
 
     def filter(entry):
         filter_passed = False
-        for f in filter:
+        for f in inflated:
             if f(entry):
                 filter_passed = entry
                 break
@@ -20,9 +27,15 @@ def any_of(**kwargs):
 
 def all_of(**kwargs):
     filters = kwargs['filters']
-    # NB
-    # When we begin inflating filters out of configs, we'll want
-    # to inflate each filter here.
+    # filter values might be:
+    # * a dict, with the filter name the key and the settings dict the val
+    # * a string
+    # * fully inflated filters
+    inflated = [
+        inflate_filter(f) if not isinstance(f, dict)
+        else inflate(f.keys()[0], f.items()[0])
+        for f in filters
+    ]
 
     def filter(entry):
         filter_passed = False
@@ -30,7 +43,7 @@ def all_of(**kwargs):
             entry = f(entry)
             if not entry:
                 break
-        return entry
+        return entry if entry else False
     return filter
 
 
