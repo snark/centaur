@@ -22,3 +22,5 @@ the option multiple times. e.g. 'cli.py -f http://$SAMPLE_FEED_1 -f http://$SAMP
 
 You can specify multiple config files. If the options specified in them can be
 reconciled, centaur will do so; if you have conflicting actions, it will exit.
+
+See config.json for an example of the various options and their formats.
