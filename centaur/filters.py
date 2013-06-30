@@ -11,7 +11,7 @@ def any_of(**kwargs):
     # * fully inflated filters
     inflated = [
         inflate_filter(f) if not isinstance(f, dict)
-        else inflate(f.keys()[0], f.items()[0])
+        else inflate_filter(f.keys()[0], f.values()[0])
         for f in filters
     ]
 
@@ -33,7 +33,7 @@ def all_of(**kwargs):
     # * fully inflated filters
     inflated = [
         inflate_filter(f) if not isinstance(f, dict)
-        else inflate(f.keys()[0], f.items()[0])
+        else inflate(f.keys()[0], f.values()[0])
         for f in filters
     ]
 

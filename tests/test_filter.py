@@ -1,6 +1,124 @@
 from centaur import (util)
 import types
 
+def pass_filter(**kwargs):
+    def filter(entry):
+        return entry
+    return filter
+
+def fail_filter(**kwargs):
+    def filter(entry):
+        return False
+    return filter
+
+e1 = {"title": "foo bar"}
+e2 = {"title": "bar baz"}
+e3 = {"title": "baz zap"}
+metasyntactic_feed = [e1, e2, e3]
+
+def test_any_of_inflation():
+    util.FILTER_MODULES.append(__name__)
+    # Pass in a dict argument
+    dict_based_filter = util.inflate_filter(
+        'any_of',
+        {
+            'filters': [
+                {'title_matches': {'strings': ['baz']}}
+            ]
+        }
+    )
+    filtered_entries = []
+    for entry in metasyntactic_feed:
+        entry = dict_based_filter(entry)
+        if entry:
+            filtered_entries.append(entry)
+    assert filtered_entries == [e2, e3]
+    # Or strings
+    string_based_filter = util.inflate_filter(
+        'any_of',
+        {
+            'filters': [
+                'pass_filter',
+                'fail_filter'
+            ]
+        }
+    )
+    filtered_entries = []
+    for entry in metasyntactic_feed:
+        entry = string_based_filter(entry)
+        if entry:
+            filtered_entries.append(entry)
+    assert filtered_entries == [e1, e2, e3]
+    # Or fully-inflated filters
+    pass_f = util.inflate_filter(
+        'pass_filter',
+        None
+    )
+    fail_f = util.inflate_filter(
+        'pass_filter',
+        None
+    )
+    func_based_filter = util.inflate_filter(
+        'any_of',
+        {
+            'filters': [
+                pass_f,
+                fail_f,
+            ]
+        }
+    )
+    filtered_entries = []
+    for entry in metasyntactic_feed:
+        entry = func_based_filter(entry)
+        if entry:
+            filtered_entries.append(entry)
+    assert filtered_entries == [e1, e2, e3]
+
+def test_any_of_behavior():
+    multi_match = util.inflate_filter(
+        'any_of',
+        {
+            'filters': [
+                {'title_matches': {'strings': ['bar']}},
+                {'title_matches': {'strings': ['baz']}}
+            ]
+        }
+    )
+    filtered_entries = []
+    for entry in metasyntactic_feed:
+        entry = multi_match(entry)
+        if entry:
+            filtered_entries.append(entry)
+    assert filtered_entries == [e1, e2, e3]
+    one_failure = util.inflate_filter(
+        'any_of',
+        {
+            'filters': [
+                {'title_matches': {'strings': ['quux']}},
+                {'title_matches': {'strings': ['baz']}}
+            ]
+        }
+    )
+    filtered_entries = []
+    for entry in metasyntactic_feed:
+        entry = one_failure(entry)
+        if entry:
+            filtered_entries.append(entry)
+    assert filtered_entries == [e2, e3]
+    only_failure = util.inflate_filter(
+        'any_of',
+        {
+            'filters': [
+                {'title_matches': {'strings': ['quux']}}
+            ]
+        }
+    )
+    filtered_entries = []
+    for entry in metasyntactic_feed:
+        entry = only_failure(entry)
+        if entry:
+            filtered_entries.append(entry)
+    assert filtered_entries == []
 
 def test_inflation():
     passable = {"title": "fooby"}
