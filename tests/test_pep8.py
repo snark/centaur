@@ -3,6 +3,7 @@ from nose.plugins.attrib import attr
 import subprocess
 import os.path
 import logging
+import six
 
 TEST_DIR = os.path.dirname(__file__)
 SOURCES_DIR = TEST_DIR + "/../centaur"
@@ -17,8 +18,12 @@ class TestPep8():
         stderr=subprocess.STDOUT,
     )
     (stdout, stderr) = popen.communicate()
-    if stdout != "":
-        lines = stdout.split("\n")
+    if six.PY3:
+        stdoutStr = str(stdout, encoding='utf8')
+    else:
+        stdoutStr = stdout
+    if stdoutStr != "":
+        lines = stdoutStr.split("\n")
         for line in lines:
             if line != "":
                 logging.error(line)
