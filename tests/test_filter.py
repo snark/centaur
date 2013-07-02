@@ -1,10 +1,12 @@
 from centaur import (util)
 import types
 
+
 def pass_filter(**kwargs):
     def filter(entry):
         return entry
     return filter
+
 
 def fail_filter(**kwargs):
     def filter(entry):
@@ -15,6 +17,7 @@ e1 = {"title": "foo bar"}
 e2 = {"title": "bar baz"}
 e3 = {"title": "baz zap"}
 metasyntactic_feed = [e1, e2, e3]
+
 
 def test_any_of_inflation():
     util.FILTER_MODULES.append(__name__)
@@ -74,6 +77,7 @@ def test_any_of_inflation():
             filtered_entries.append(entry)
     assert filtered_entries == [e1, e2, e3]
 
+
 def test_any_of_behavior():
     multi_match = util.inflate_filter(
         'any_of',
@@ -119,6 +123,7 @@ def test_any_of_behavior():
         if entry:
             filtered_entries.append(entry)
     assert filtered_entries == []
+
 
 def test_inflation():
     passable = {"title": "fooby"}
