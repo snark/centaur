@@ -1,0 +1,3 @@
+six
+pep8
+nose
