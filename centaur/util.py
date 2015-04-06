@@ -9,6 +9,7 @@ del ENTITY_MAPPINGS['lt']
 del ENTITY_MAPPINGS['gt']
 del ENTITY_MAPPINGS['amp']
 
+
 def _entity_replace(matchobj):
     trimmed = matchobj.group(0)[1:-1]
     if trimmed in ENTITY_MAPPINGS:
@@ -17,10 +18,12 @@ def _entity_replace(matchobj):
         # Throw up our hands in despair
         return trimmed
 
+
 def entity_names_to_codepoints(content):
     for ename in ENTITY_MAPPINGS:
         content = re.sub(r'&{};'.format(ename), _entity_replace, content)
     return content
+
 
 def entry_guarantee_date(entry, fallback_date=None):
     date = None
@@ -34,8 +37,10 @@ def entry_guarantee_date(entry, fallback_date=None):
         date = datetime.datetime.now().isoformat()
     return date
 
+
 def always(node):
     return True
+
 
 def never(node):
     return False
