@@ -26,6 +26,7 @@ class Graph(object):
         self.add_node(to_node)
         from_node.add_child(to_node)
 
+
 class Node(object):
     def __init__(self, name, options=None):
         self.name = name
@@ -69,7 +70,8 @@ class Node(object):
         while len(unvisited_ancestors):
             ancestor = unvisited_ancestors.pop()
             if ancestor not in visited_ancestors:
-                unvisited_ancestors = unvisited_ancestors.union(ancestor.parents)
+                unvisited_ancestors = unvisited_ancestors.union(
+                        ancestor.parents)
                 visited_ancestors.add(ancestor)
         return visited_ancestors
 
@@ -78,6 +80,7 @@ class Node(object):
 
     def __repr__(self):
         return "Node: {}".format(self.name)
+
 
 class SourceNode(Node):
     def run(self):
@@ -89,8 +92,10 @@ class SourceNode(Node):
     def _is_source(self):
         return True
 
+
 class FilterNode(Node):
     pass
+
 
 class AccumulatorNode(Node):
     def __init__(self, name, options=None):
@@ -118,7 +123,6 @@ class AccumulatorNode(Node):
                 raise ValueError(
                     'conditional_actions argument must be iterable'
                 )
-
 
     def check_conditions(self):
         for (condition, action) in self.conditions:

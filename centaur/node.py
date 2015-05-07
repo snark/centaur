@@ -7,9 +7,9 @@ from feedgen.feed import FeedGenerator, FeedEntry
 from lxml import etree
 
 CDATA_MIMETYPES = {'text/html', 'text/xml', 'application/xhtml',
-        'application/xhtml+xml'}
+                   'application/xhtml+xml'}
 FEEDGEN_LINK_PROPERTIES = {'title', 'hreflang', 'length', 'href',
-        'rel', 'type'}
+                           'rel', 'type'}
 FEEDGEN_REL_LINK_VALUES = {'alternate', 'enclosure', 'related', 'self', 'via'}
 
 
@@ -92,8 +92,8 @@ class FeedGeneratorNode(AccumulatorNode):
             elif entry.get('title'):
                 fe.title(entry['title'])
             if entry.get('summary_detail'):
-                if entry['summary_detail']['type'] in {'text/html',
-                        'text/xhtml'}:
+                if entry['summary_detail']['type'] in \
+                            {'text/html', 'text/xhtml'}:
                     # Not currently accounting for "base"
                     fe.summary(etree.CDATA(entry['summary_detail']['value']))
                 else:
@@ -127,8 +127,7 @@ class FeedGeneratorNode(AccumulatorNode):
         return returnable
 
     def generate_feed(self):
-        sorted_entries = sorted(self.entries,
-                key=entry_guarantee_date)
+        sorted_entries = sorted(self.entries, key=entry_guarantee_date)
         for fe in reversed(sorted_entries):
             self.generator.add_entry(fe)
         with open(self.output_file, 'w') as file:

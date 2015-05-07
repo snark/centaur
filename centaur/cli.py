@@ -3,11 +3,11 @@ import sys
 import os
 from centaur import app
 
+
 @click.command()
 @click.version_option()
 @click.option('--config', default=None,
-        help='Config file to use; default is ~/.centaurrc.')
-
+              help='Config file to use; default is ~/.centaurrc.')
 def main(config):
     """Parse a number of RSS or Atom feeds, apply optional filters,
     and generate a single combined feed as output."""
