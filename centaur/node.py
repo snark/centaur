@@ -42,8 +42,6 @@ class FeedGeneratorNode(AccumulatorNode):
         options['conditional_actions'] = [(always, self.generate_feed)]
         super(FeedGeneratorNode, self).__init__(name, options)
         fg = FeedGenerator()
-        fg.id('foo')
-        fg.title('bar')
         self.generator = fg
         self.filter_invalid = options.get('filter_invalid', False)
         self.output_file = options['output_file']
